@@ -51,6 +51,11 @@ describe('playPhaseEndSound', () => {
     playPhaseEndSound('shortBreak')
     expect(mockAudioContext.createOscillator).toHaveBeenCalled()
   })
+
+  it("ne joue pas de son pour la phase idle", () => {
+    playPhaseEndSound('idle')
+    expect(mockAudioContext.createOscillator).not.toHaveBeenCalled()
+  })
 })
 
 describe('requestNotificationPermission', () => {

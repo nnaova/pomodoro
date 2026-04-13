@@ -37,6 +37,7 @@ function playBreakEndSound(): void {
 }
 
 export function playPhaseEndSound(phase: Phase): void {
+  if (phase === 'idle') return
   if (phase === 'work') playWorkEndSound()
   else playBreakEndSound()
 }
