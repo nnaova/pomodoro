@@ -46,6 +46,7 @@ export function Timer() {
         width="260"
         height="260"
         viewBox="0 0 260 260"
+        role="img"
         aria-label={`Timer: ${formatTime(timeLeft)}`}
       >
         <circle

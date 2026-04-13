@@ -6,6 +6,11 @@ export function Controls() {
   const { isRunning, phase, start, pause, stop, advancePhase } = usePomodoroStore()
   const isIdle = phase === 'idle'
 
+  const phaseColor =
+    phase === 'shortBreak' ? 'var(--color-short-break)' :
+    phase === 'longBreak' ? 'var(--color-long-break)' :
+    'var(--color-work)'
+
   return (
     <div className={styles.controls}>
       <button
@@ -20,6 +25,7 @@ export function Controls() {
         className={`${styles.btn} ${styles.primary}`}
         onClick={isRunning ? pause : start}
         aria-label={isRunning ? 'Pause' : 'Démarrer'}
+        style={{ background: phaseColor }}
       >
         {isRunning ? '⏸' : '▶'}
       </button>
