@@ -1,9 +1,34 @@
-function App() {
+// src/App.tsx
+import { useState, useEffect } from 'react'
+import { usePomodoroStore } from './store/pomodoroStore'
+import { useTimer } from './hooks/useTimer'
+import { Timer } from './components/Timer/Timer'
+import { Controls } from './components/Controls/Controls'
+import { CycleIndicator } from './components/CycleIndicator/CycleIndicator'
+import { Header } from './components/Header/Header'
+import { Settings } from './components/Settings/Settings'
+import styles from './App.module.css'
+import './index.css'
+
+export default function App() {
+  const theme = usePomodoroStore((s) => s.theme)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+
+  useTimer()
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
+
   return (
-    <div>
-      <h1>Pomodoro Timer</h1>
+    <div className={styles.app}>
+      <Header onSettingsClick={() => setSettingsOpen(true)} />
+      <main className={styles.main}>
+        <Timer />
+        <CycleIndicator />
+        <Controls />
+      </main>
+      {settingsOpen && <Settings onClose={() => setSettingsOpen(false)} />}
     </div>
   )
 }
-
-export default App
