@@ -65,6 +65,12 @@ describe('decrementTime', () => {
     usePomodoroStore.getState().decrementTime()
     expect(usePomodoroStore.getState().timeLeft).toBe(99)
   })
+
+  it('ne descend pas en dessous de 0', () => {
+    usePomodoroStore.setState({ timeLeft: 0 })
+    usePomodoroStore.getState().decrementTime()
+    expect(usePomodoroStore.getState().timeLeft).toBe(0)
+  })
 })
 
 describe('advancePhase', () => {
@@ -103,6 +109,18 @@ describe('advancePhase', () => {
     usePomodoroStore.setState({ phase: 'work', currentCycle: 0, shortBreakDuration: 5 })
     usePomodoroStore.getState().advancePhase()
     expect(usePomodoroStore.getState().timeLeft).toBe(5 * 60)
+  })
+
+  it('ne fait rien si phase est idle', () => {
+    usePomodoroStore.setState({ phase: 'idle' })
+    usePomodoroStore.getState().advancePhase()
+    expect(usePomodoroStore.getState().phase).toBe('idle')
+  })
+
+  it('shortBreak → work ne modifie pas completedCycles', () => {
+    usePomodoroStore.setState({ phase: 'shortBreak', completedCycles: 2 })
+    usePomodoroStore.getState().advancePhase()
+    expect(usePomodoroStore.getState().completedCycles).toBe(2)
   })
 })
 

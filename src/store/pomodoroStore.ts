@@ -23,7 +23,7 @@ export interface Session {
   isRunning: boolean
 }
 
-interface Actions {
+export interface Actions {
   start: () => void
   pause: () => void
   stop: () => void
@@ -76,11 +76,13 @@ export const usePomodoroStore = create<PomodoroStore>()(
         })
       },
 
-      decrementTime: () => set((s) => ({ timeLeft: s.timeLeft - 1 })),
+      decrementTime: () => set((s) => ({ timeLeft: Math.max(0, s.timeLeft - 1) })),
 
       advancePhase: () => {
+        const { phase } = get()
+        if (phase === 'idle') return
         const {
-          phase, currentCycle, completedCycles, cyclesBeforeLongBreak,
+          currentCycle, completedCycles, cyclesBeforeLongBreak,
           workDuration, shortBreakDuration, longBreakDuration,
         } = get()
 
