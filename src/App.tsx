@@ -8,7 +8,6 @@ import { CycleIndicator } from './components/CycleIndicator/CycleIndicator'
 import { Header } from './components/Header/Header'
 import { Settings } from './components/Settings/Settings'
 import styles from './App.module.css'
-import './index.css'
 
 export default function App() {
   const theme = usePomodoroStore((s) => s.theme)
