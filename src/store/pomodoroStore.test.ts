@@ -1,5 +1,5 @@
 // src/store/pomodoroStore.test.ts
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { usePomodoroStore } from './pomodoroStore'
 
 const DEFAULTS = {
@@ -15,6 +15,7 @@ const DEFAULTS = {
   currentCycle: 0,
   completedCycles: 0,
   isRunning: false,
+  endTimestamp: null as number | null,
 }
 
 beforeEach(() => {
@@ -23,18 +24,23 @@ beforeEach(() => {
 
 describe('start', () => {
   it('passe de idle à work et démarre le timer', () => {
+    const before = Date.now()
     usePomodoroStore.getState().start()
     const s = usePomodoroStore.getState()
     expect(s.phase).toBe('work')
     expect(s.isRunning).toBe(true)
     expect(s.timeLeft).toBe(25 * 60)
+    expect(s.endTimestamp).toBeGreaterThanOrEqual(before + 25 * 60 * 1000)
   })
 
   it('reprend un timer en pause sans réinitialiser timeLeft', () => {
     usePomodoroStore.setState({ phase: 'work', timeLeft: 600, isRunning: false })
+    const before = Date.now()
     usePomodoroStore.getState().start()
-    expect(usePomodoroStore.getState().isRunning).toBe(true)
-    expect(usePomodoroStore.getState().timeLeft).toBe(600)
+    const s = usePomodoroStore.getState()
+    expect(s.isRunning).toBe(true)
+    expect(s.timeLeft).toBe(600)
+    expect(s.endTimestamp).toBeGreaterThanOrEqual(before + 600 * 1000)
   })
 })
 
@@ -44,11 +50,24 @@ describe('pause', () => {
     usePomodoroStore.getState().pause()
     expect(usePomodoroStore.getState().isRunning).toBe(false)
   })
+
+  it('calcule timeLeft depuis endTimestamp et efface endTimestamp', () => {
+    vi.useFakeTimers()
+    const endTimestamp = Date.now() + 50 * 1000
+    usePomodoroStore.setState({ phase: 'work', timeLeft: 100, isRunning: true, endTimestamp })
+    vi.advanceTimersByTime(10000) // 10s se sont écoulées
+    usePomodoroStore.getState().pause()
+    const s = usePomodoroStore.getState()
+    expect(s.isRunning).toBe(false)
+    expect(s.endTimestamp).toBeNull()
+    expect(s.timeLeft).toBe(40) // 50s - 10s écoulées
+    vi.useRealTimers()
+  })
 })
 
 describe('stop', () => {
   it('réinitialise toute la session à idle', () => {
-    usePomodoroStore.setState({ phase: 'work', timeLeft: 100, currentCycle: 2, completedCycles: 5, isRunning: true })
+    usePomodoroStore.setState({ phase: 'work', timeLeft: 100, currentCycle: 2, completedCycles: 5, isRunning: true, endTimestamp: Date.now() + 100000 })
     usePomodoroStore.getState().stop()
     const s = usePomodoroStore.getState()
     expect(s.phase).toBe('idle')
@@ -56,6 +75,7 @@ describe('stop', () => {
     expect(s.currentCycle).toBe(0)
     expect(s.completedCycles).toBe(0)
     expect(s.isRunning).toBe(false)
+    expect(s.endTimestamp).toBeNull()
   })
 })
 
@@ -107,8 +127,11 @@ describe('advancePhase', () => {
 
   it('remet timeLeft à la durée de la nouvelle phase', () => {
     usePomodoroStore.setState({ phase: 'work', currentCycle: 0, shortBreakDuration: 5 })
+    const before = Date.now()
     usePomodoroStore.getState().advancePhase()
-    expect(usePomodoroStore.getState().timeLeft).toBe(5 * 60)
+    const s = usePomodoroStore.getState()
+    expect(s.timeLeft).toBe(5 * 60)
+    expect(s.endTimestamp).toBeGreaterThanOrEqual(before + 5 * 60 * 1000)
   })
 
   it('ne fait rien si phase est idle', () => {

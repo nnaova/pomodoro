@@ -8,20 +8,36 @@ export function useTimer(): void {
   useEffect(() => {
     if (!isRunning) return
 
-    const interval = setInterval(() => {
+    const tick = () => {
       const state = usePomodoroStore.getState()
       if (!state.isRunning) return
 
-      if (state.timeLeft <= 0) {
+      const { endTimestamp } = state
+      if (endTimestamp === null) return
+
+      const remaining = Math.ceil((endTimestamp - Date.now()) / 1000)
+
+      if (remaining <= 0) {
         const { phase, soundEnabled, notificationsEnabled } = state
         if (soundEnabled) playPhaseEndSound(phase)
         if (notificationsEnabled) sendPhaseNotification(phase)
         state.advancePhase()
       } else {
-        state.decrementTime()
+        state.setTimeLeft(remaining)
       }
-    }, 1000)
+    }
 
-    return () => clearInterval(interval)
+    const interval = setInterval(tick, 1000)
+
+    // Correction immédiate quand l'onglet redevient visible
+    const handleVisibilityChange = () => {
+      if (!document.hidden) tick()
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [isRunning])
 }

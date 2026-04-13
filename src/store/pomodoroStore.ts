@@ -21,6 +21,7 @@ export interface Session {
   currentCycle: number    // 0-based, reset à 0 après longue pause
   completedCycles: number // total depuis démarrage
   isRunning: boolean
+  endTimestamp: number | null // timestamp (ms) de fin de la phase courante
 }
 
 export interface Actions {
@@ -28,6 +29,7 @@ export interface Actions {
   pause: () => void
   stop: () => void
   decrementTime: () => void
+  setTimeLeft: (t: number) => void
   advancePhase: () => void
   updateSettings: (s: Partial<Settings>) => void
 }
@@ -53,17 +55,25 @@ export const usePomodoroStore = create<PomodoroStore>()(
       currentCycle: 0,
       completedCycles: 0,
       isRunning: false,
+      endTimestamp: null,
 
       start: () => {
-        const { phase, workDuration } = get()
+        const { phase, workDuration, timeLeft } = get()
         if (phase === 'idle') {
-          set({ phase: 'work', timeLeft: workDuration * 60, isRunning: true })
+          const duration = workDuration * 60
+          set({ phase: 'work', timeLeft: duration, isRunning: true, endTimestamp: Date.now() + duration * 1000 })
         } else {
-          set({ isRunning: true })
+          set({ isRunning: true, endTimestamp: Date.now() + timeLeft * 1000 })
         }
       },
 
-      pause: () => set({ isRunning: false }),
+      pause: () => {
+        const { endTimestamp, timeLeft } = get()
+        const remaining = endTimestamp
+          ? Math.max(0, Math.ceil((endTimestamp - Date.now()) / 1000))
+          : timeLeft
+        set({ isRunning: false, timeLeft: remaining, endTimestamp: null })
+      },
 
       stop: () => {
         const { workDuration } = get()
@@ -73,10 +83,13 @@ export const usePomodoroStore = create<PomodoroStore>()(
           currentCycle: 0,
           completedCycles: 0,
           isRunning: false,
+          endTimestamp: null,
         })
       },
 
       decrementTime: () => set((s) => ({ timeLeft: Math.max(0, s.timeLeft - 1) })),
+
+      setTimeLeft: (t: number) => set({ timeLeft: t }),
 
       advancePhase: () => {
         const { phase } = get()
@@ -110,12 +123,14 @@ export const usePomodoroStore = create<PomodoroStore>()(
           longBreak: longBreakDuration,
         }
 
+        const newDuration = durations[newPhase] * 60
         set({
           phase: newPhase,
-          timeLeft: durations[newPhase] * 60,
+          timeLeft: newDuration,
           currentCycle: newCurrentCycle,
           completedCycles: newCompletedCycles,
           isRunning: true,
+          endTimestamp: Date.now() + newDuration * 1000,
         })
       },
 
