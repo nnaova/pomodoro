@@ -7,11 +7,12 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'icons/*.png'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', '*.png'],
       manifest: {
         name: 'Pomodoro Timer',
         short_name: 'Pomodoro',
         description: 'Minuteur Pomodoro configurable',
+        lang: 'fr',
         theme_color: '#1a1a2e',
         background_color: '#1a1a2e',
         display: 'standalone',
