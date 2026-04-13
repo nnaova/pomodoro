@@ -52,16 +52,15 @@ export function Settings({ onClose }: SettingsProps) {
     })
 
   return (
-    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true">
+    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="settings-title">
       <div className={styles.panel} onClick={(e) => e.stopPropagation()}>
-        <h2 className={styles.title}>Paramètres</h2>
+        <h2 id="settings-title" className={styles.title}>Paramètres</h2>
 
         <div className={styles.fields}>
           <label className={styles.field}>
             <span>Travail (min)</span>
             <input
               type="number" min="1" max="120"
-              aria-label="Travail (min)"
               value={values.workDuration}
               onChange={handleChange('workDuration')}
             />
@@ -70,7 +69,6 @@ export function Settings({ onClose }: SettingsProps) {
             <span>Pause courte (min)</span>
             <input
               type="number" min="1" max="60"
-              aria-label="Pause courte (min)"
               value={values.shortBreakDuration}
               onChange={handleChange('shortBreakDuration')}
             />
@@ -79,7 +77,6 @@ export function Settings({ onClose }: SettingsProps) {
             <span>Pause longue (min)</span>
             <input
               type="number" min="1" max="120"
-              aria-label="Pause longue (min)"
               value={values.longBreakDuration}
               onChange={handleChange('longBreakDuration')}
             />
@@ -88,7 +85,6 @@ export function Settings({ onClose }: SettingsProps) {
             <span>Cycles avant longue pause</span>
             <input
               type="number" min="1" max="10"
-              aria-label="Cycles avant longue pause"
               value={values.cyclesBeforeLongBreak}
               onChange={handleChange('cyclesBeforeLongBreak')}
             />
