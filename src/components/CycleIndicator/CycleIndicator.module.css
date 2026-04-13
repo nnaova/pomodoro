@@ -1,0 +1,19 @@
+/* src/components/CycleIndicator/CycleIndicator.module.css */
+.dots {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-track);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.filled {
+  background: var(--color-work);
+  transform: scale(1.2);
+}
