@@ -12,7 +12,7 @@ export function useTimer(): void {
       const state = usePomodoroStore.getState()
       if (!state.isRunning) return
 
-      if (state.timeLeft <= 1) {
+      if (state.timeLeft <= 0) {
         const { phase, soundEnabled, notificationsEnabled } = state
         if (soundEnabled) playPhaseEndSound(phase)
         if (notificationsEnabled) sendPhaseNotification(phase)

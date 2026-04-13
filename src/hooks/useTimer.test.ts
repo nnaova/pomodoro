@@ -43,7 +43,7 @@ describe('useTimer', () => {
   it('appelle playPhaseEndSound et advancePhase quand timeLeft atteint 0', () => {
     usePomodoroStore.setState({ phase: 'work', timeLeft: 1, isRunning: true })
     renderHook(() => useTimer())
-    act(() => { vi.advanceTimersByTime(1000) })
+    act(() => { vi.advanceTimersByTime(2000) })
     expect(playPhaseEndSound).toHaveBeenCalledWith('work')
     expect(usePomodoroStore.getState().phase).toBe('shortBreak')
   })
@@ -51,7 +51,7 @@ describe('useTimer', () => {
   it('appelle sendPhaseNotification si notificationsEnabled', () => {
     usePomodoroStore.setState({ phase: 'work', timeLeft: 1, isRunning: true, notificationsEnabled: true })
     renderHook(() => useTimer())
-    act(() => { vi.advanceTimersByTime(1000) })
+    act(() => { vi.advanceTimersByTime(2000) })
     expect(sendPhaseNotification).toHaveBeenCalledWith('work')
   })
 
@@ -61,7 +61,7 @@ describe('useTimer', () => {
       soundEnabled: false, notificationsEnabled: false,
     })
     renderHook(() => useTimer())
-    act(() => { vi.advanceTimersByTime(1000) })
+    act(() => { vi.advanceTimersByTime(2000) })
     expect(playPhaseEndSound).not.toHaveBeenCalled()
     expect(sendPhaseNotification).not.toHaveBeenCalled()
   })

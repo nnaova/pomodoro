@@ -16,6 +16,14 @@ export default function App() {
   useTimer()
 
   useEffect(() => {
+    if (typeof Notification === 'undefined') return
+    const { notificationsEnabled, updateSettings } = usePomodoroStore.getState()
+    if (notificationsEnabled && Notification.permission !== 'granted') {
+      updateSettings({ notificationsEnabled: false })
+    }
+  }, [])
+
+  useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
 
