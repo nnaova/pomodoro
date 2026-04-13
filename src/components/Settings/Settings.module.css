@@ -1,0 +1,109 @@
+/* src/components/Settings/Settings.module.css */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: var(--shadow);
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.field input {
+  width: 72px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-track);
+  background: var(--surface-elevated);
+  color: var(--text);
+  font-size: 1rem;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.field input:focus {
+  border-color: var(--color-work);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28px;
+  gap: 8px;
+}
+
+.rightActions {
+  display: flex;
+  gap: 8px;
+}
+
+.resetBtn {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  padding: 4px;
+}
+
+.resetBtn:hover {
+  color: var(--text);
+}
+
+.cancelBtn, .saveBtn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.cancelBtn {
+  background: var(--btn-bg);
+  color: var(--text);
+}
+
+.cancelBtn:hover {
+  background: var(--btn-hover);
+}
+
+.saveBtn {
+  background: var(--color-work);
+  color: #fff;
+}
+
+.saveBtn:hover {
+  filter: brightness(1.1);
+}
