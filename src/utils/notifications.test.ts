@@ -24,9 +24,13 @@ const mockAudioContext = {
 vi.stubGlobal('AudioContext', vi.fn(() => mockAudioContext))
 
 // Mock Notification API
-const mockNotification = vi.fn()
-mockNotification.permission = 'granted'
-mockNotification.requestPermission = vi.fn().mockResolvedValue('granted')
+const mockNotification = Object.assign(vi.fn(), {
+  permission: 'granted' as NotificationPermission,
+  requestPermission: vi.fn().mockResolvedValue('granted' as NotificationPermission),
+}) as unknown as typeof Notification & {
+  permission: NotificationPermission
+  requestPermission: () => Promise<NotificationPermission>
+}
 vi.stubGlobal('Notification', mockNotification)
 
 import {
