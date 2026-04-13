@@ -9,6 +9,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', '*.png'],
       manifest: {
+        id: '/',
         name: 'Pomodoro Timer',
         short_name: 'Pomodoro',
         description: 'Minuteur Pomodoro configurable',
@@ -16,7 +17,10 @@ export default defineConfig({
         theme_color: '#1a1a2e',
         background_color: '#1a1a2e',
         display: 'standalone',
+        display_override: ['standalone', 'minimal-ui', 'browser'],
+        orientation: 'any',
         start_url: '/',
+        scope: '/',
         icons: [
           { src: 'pwa-64x64.png', sizes: '64x64', type: 'image/png' },
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
