@@ -103,4 +103,18 @@ describe('TaskList', () => {
     fireEvent.blur(input)
     expect(screen.getByText('Tâche via blur')).toBeInTheDocument()
   })
+
+  it('décocher une tâche terminée la remet dans les actives', () => {
+    usePomodoroStore.setState({
+      tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
+    })
+    render(<TaskList />)
+    fireEvent.click(screen.getByText(/1 terminée/))
+    // accordion is open, now uncheck the done task
+    const checkbox = screen.getByRole('checkbox')
+    fireEvent.click(checkbox)
+    // task should now be active, accordion should be gone
+    expect(screen.queryByText(/terminée/)).toBeNull()
+    expect(screen.getByText('Tâche finie')).toBeInTheDocument()
+  })
 })

@@ -116,7 +116,15 @@ function AddTaskInput() {
       className={styles.addInput}
       value={value}
       onChange={(e) => setValue(e.target.value)}
-      onKeyDown={(e) => { if (e.key === 'Enter') submit() }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault()
+          submit()
+        } else if (e.key === 'Escape') {
+          setValue('')
+          setEditing(false)
+        }
+      }}
       onBlur={submit}
       autoFocus
       placeholder="Nouvelle tâche…"
