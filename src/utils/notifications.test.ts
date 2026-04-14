@@ -24,7 +24,8 @@ const mockAudioContext = {
 vi.stubGlobal('AudioContext', vi.fn(() => mockAudioContext))
 
 // Mock Notification API
-const mockNotification = Object.assign(vi.fn(), {
+const mockNotificationImpl = vi.fn()
+const mockNotification = Object.assign(mockNotificationImpl, {
   permission: 'granted' as NotificationPermission,
   requestPermission: vi.fn().mockResolvedValue('granted' as NotificationPermission),
 }) as unknown as typeof Notification & {
@@ -131,7 +132,7 @@ describe('sendPhaseNotification', () => {
   })
 
   it("ne propage pas d'exception si new Notification() throw", async () => {
-    mockNotification.mockImplementationOnce(() => {
+    mockNotificationImpl.mockImplementationOnce(() => {
       throw new TypeError('Illegal constructor')
     })
     await expect(sendPhaseNotification('work')).resolves.toBeUndefined()
