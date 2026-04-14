@@ -215,6 +215,16 @@ describe('reorderTasks', () => {
     expect(titles).toEqual(['C', 'A', 'B'])
   })
 
+  it('déplace une tâche vers le bas', () => {
+    usePomodoroStore.getState().addTask('A')
+    usePomodoroStore.getState().addTask('B')
+    usePomodoroStore.getState().addTask('C')
+    const [a, , c] = usePomodoroStore.getState().tasks
+    usePomodoroStore.getState().reorderTasks(a.id, c.id)
+    const titles = usePomodoroStore.getState().tasks.map((t) => t.title)
+    expect(titles).toEqual(['B', 'C', 'A'])
+  })
+
   it('ne modifie rien si activeId ou overId est inconnu', () => {
     usePomodoroStore.getState().addTask('A')
     usePomodoroStore.getState().reorderTasks('inconnu', 'aussi-inconnu')
