@@ -7,6 +7,7 @@ import { Controls } from './components/Controls/Controls'
 import { CycleIndicator } from './components/CycleIndicator/CycleIndicator'
 import { Header } from './components/Header/Header'
 import { Settings } from './components/Settings/Settings'
+import { TaskList } from './components/TaskList/TaskList'
 import styles from './App.module.css'
 
 export default function App() {
@@ -34,6 +35,7 @@ export default function App() {
         <Timer />
         <CycleIndicator />
         <Controls />
+        <TaskList />
       </main>
       {settingsOpen && <Settings onClose={() => setSettingsOpen(false)} />}
     </div>
