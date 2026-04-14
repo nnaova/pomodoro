@@ -1,0 +1,120 @@
+/* src/components/TaskList/TaskList.module.css */
+
+.taskList {
+  width: 100%;
+  border-top: 1px solid var(--surface-elevated);
+  padding-top: 16px;
+}
+
+.accordion {
+  margin-bottom: 4px;
+}
+
+.accordionHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-short-break);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 4px;
+  font-family: inherit;
+}
+
+.accordionArrow {
+  font-size: 10px;
+}
+
+.accordionBody {
+  margin-bottom: 8px;
+}
+
+.taskItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 4px;
+  border-bottom: 1px solid var(--surface-elevated);
+}
+
+.dragHandle {
+  color: var(--text-muted);
+  cursor: grab;
+  font-size: 16px;
+  flex-shrink: 0;
+  touch-action: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragHandlePlaceholder {
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-short-break);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.taskLabel {
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  flex: 1;
+}
+
+.taskLabelDone {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.addLink {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 8px 4px;
+  font-family: inherit;
+  margin-top: 4px;
+  transition: color 0.15s ease;
+}
+
+.addLink:hover {
+  color: var(--text);
+}
+
+.addInput {
+  display: block;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--surface-elevated);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 14px;
+  padding: 8px 10px;
+  font-family: inherit;
+  outline: none;
+  margin-top: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.addInput:focus {
+  border-color: var(--color-short-break);
+}
