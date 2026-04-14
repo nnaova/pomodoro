@@ -12,8 +12,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   flex: 1;
-  gap: 24px;
   padding: 24px 0;
+}
+
+.timerZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 24px;
+  width: 100%;
+}
+
+.taskZone {
+  width: 100%;
 }

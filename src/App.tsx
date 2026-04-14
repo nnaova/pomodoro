@@ -32,10 +32,14 @@ export default function App() {
     <div className={styles.app}>
       <Header onSettingsClick={() => setSettingsOpen(true)} />
       <main className={styles.main}>
-        <Timer />
-        <CycleIndicator />
-        <Controls />
-        <TaskList />
+        <div className={styles.timerZone}>
+          <Timer />
+          <CycleIndicator />
+          <Controls />
+        </div>
+        <div className={styles.taskZone}>
+          <TaskList />
+        </div>
       </main>
       {settingsOpen && <Settings onClose={() => setSettingsOpen(false)} />}
     </div>
