@@ -94,4 +94,13 @@ describe('TaskList', () => {
     expect(screen.getByText('Active')).toBeInTheDocument()
     expect(screen.queryByText('Finie')).toBeNull()
   })
+
+  it('ajoute une tâche sur perte de focus (blur)', () => {
+    render(<TaskList />)
+    fireEvent.click(screen.getByText('+ Ajouter une tâche'))
+    const input = screen.getByPlaceholderText('Nouvelle tâche…')
+    fireEvent.change(input, { target: { value: 'Tâche via blur' } })
+    fireEvent.blur(input)
+    expect(screen.getByText('Tâche via blur')).toBeInTheDocument()
+  })
 })

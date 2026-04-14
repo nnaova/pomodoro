@@ -132,7 +132,7 @@ export function TaskList() {
   const doneTasks = tasks.filter((t) => t.done)
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor, {
       activationConstraint: { delay: 200, tolerance: 5 },
     }),
