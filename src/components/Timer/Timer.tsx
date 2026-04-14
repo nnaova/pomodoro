@@ -36,7 +36,7 @@ export function Timer() {
   }
 
   const total = durations[phase]
-  const progress = total > 0 ? (total - timeLeft) / total : 0
+  const progress = phase === 'idle' ? 0 : (total > 0 ? (total - timeLeft) / total : 0)
   const strokeDashoffset = CIRCUMFERENCE * (1 - progress)
   const color = PHASE_COLORS[phase]
 

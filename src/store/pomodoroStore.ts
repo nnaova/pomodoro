@@ -135,11 +135,15 @@ export const usePomodoroStore = create<PomodoroStore>()(
       },
 
       updateSettings: (newSettings) => {
-        set(newSettings)
         const state = get()
+        const updates: Partial<PomodoroStore> = { ...newSettings }
         if (state.phase === 'idle') {
-          set({ timeLeft: state.workDuration * 60 })
+          const newWorkDuration = 'workDuration' in newSettings
+            ? (newSettings as { workDuration?: number }).workDuration ?? state.workDuration
+            : state.workDuration
+          updates.timeLeft = newWorkDuration * 60
         }
+        set(updates)
       },
     }),
     {
