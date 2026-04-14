@@ -1,6 +1,6 @@
 // src/store/pomodoroStore.test.ts
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { usePomodoroStore } from './pomodoroStore'
+import { usePomodoroStore, type Task } from './pomodoroStore'
 
 const DEFAULTS = {
   workDuration: 25,
@@ -16,6 +16,7 @@ const DEFAULTS = {
   completedCycles: 0,
   isRunning: false,
   endTimestamp: null as number | null,
+  tasks: [] as Task[],
 }
 
 beforeEach(() => {
@@ -163,5 +164,60 @@ describe('updateSettings', () => {
     usePomodoroStore.setState({ phase: 'work', timeLeft: 600 })
     usePomodoroStore.getState().updateSettings({ workDuration: 30 })
     expect(usePomodoroStore.getState().timeLeft).toBe(600)
+  })
+})
+
+describe('addTask', () => {
+  it('ajoute une tâche avec done: false et un id', () => {
+    usePomodoroStore.getState().addTask('Écrire les tests')
+    const { tasks } = usePomodoroStore.getState()
+    expect(tasks).toHaveLength(1)
+    expect(tasks[0].title).toBe('Écrire les tests')
+    expect(tasks[0].done).toBe(false)
+    expect(typeof tasks[0].id).toBe('string')
+  })
+
+  it('ajoute plusieurs tâches dans l\'ordre', () => {
+    usePomodoroStore.getState().addTask('A')
+    usePomodoroStore.getState().addTask('B')
+    const titles = usePomodoroStore.getState().tasks.map((t) => t.title)
+    expect(titles).toEqual(['A', 'B'])
+  })
+})
+
+describe('toggleTask', () => {
+  it('bascule done à true puis à false', () => {
+    usePomodoroStore.getState().addTask('Tâche A')
+    const id = usePomodoroStore.getState().tasks[0].id
+    usePomodoroStore.getState().toggleTask(id)
+    expect(usePomodoroStore.getState().tasks[0].done).toBe(true)
+    usePomodoroStore.getState().toggleTask(id)
+    expect(usePomodoroStore.getState().tasks[0].done).toBe(false)
+  })
+
+  it('ne touche pas les autres tâches', () => {
+    usePomodoroStore.getState().addTask('A')
+    usePomodoroStore.getState().addTask('B')
+    const id = usePomodoroStore.getState().tasks[0].id
+    usePomodoroStore.getState().toggleTask(id)
+    expect(usePomodoroStore.getState().tasks[1].done).toBe(false)
+  })
+})
+
+describe('reorderTasks', () => {
+  it('déplace une tâche à la position cible', () => {
+    usePomodoroStore.getState().addTask('A')
+    usePomodoroStore.getState().addTask('B')
+    usePomodoroStore.getState().addTask('C')
+    const [a, , c] = usePomodoroStore.getState().tasks
+    usePomodoroStore.getState().reorderTasks(c.id, a.id)
+    const titles = usePomodoroStore.getState().tasks.map((t) => t.title)
+    expect(titles).toEqual(['C', 'A', 'B'])
+  })
+
+  it('ne modifie rien si activeId ou overId est inconnu', () => {
+    usePomodoroStore.getState().addTask('A')
+    usePomodoroStore.getState().reorderTasks('inconnu', 'aussi-inconnu')
+    expect(usePomodoroStore.getState().tasks).toHaveLength(1)
   })
 })
