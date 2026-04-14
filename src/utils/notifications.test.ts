@@ -86,25 +86,60 @@ describe('requestNotificationPermission', () => {
 })
 
 describe('sendPhaseNotification', () => {
-  it('envoie une notification pour la phase work', () => {
-    sendPhaseNotification('work')
+  const mockShowNotification = vi.fn()
+  const mockRegistration = { showNotification: mockShowNotification }
+
+  beforeEach(() => {
+    mockShowNotification.mockResolvedValue(undefined)
+    Object.defineProperty(navigator, 'serviceWorker', {
+      value: undefined,
+      configurable: true,
+    })
+  })
+
+  it('utilise le service worker pour envoyer la notification si disponible', async () => {
+    Object.defineProperty(navigator, 'serviceWorker', {
+      value: { getRegistration: vi.fn().mockResolvedValue(mockRegistration) },
+      configurable: true,
+    })
+    await sendPhaseNotification('work')
+    expect(mockShowNotification).toHaveBeenCalledWith(
+      'Pause !',
+      expect.objectContaining({ body: expect.any(String), icon: '/pwa-192x192.png' })
+    )
+    expect(mockNotification).not.toHaveBeenCalled()
+  })
+
+  it('utilise new Notification() en fallback si pas de service worker enregistré', async () => {
+    Object.defineProperty(navigator, 'serviceWorker', {
+      value: { getRegistration: vi.fn().mockResolvedValue(undefined) },
+      configurable: true,
+    })
+    await sendPhaseNotification('work')
     expect(mockNotification).toHaveBeenCalledWith(
       'Pause !',
-      expect.objectContaining({ body: expect.any(String) })
+      expect.objectContaining({ body: expect.any(String), icon: '/pwa-192x192.png' })
     )
   })
 
-  it('envoie une notification pour shortBreak', () => {
-    sendPhaseNotification('shortBreak')
+  it('utilise new Notification() en fallback si serviceWorker absent', async () => {
+    await sendPhaseNotification('shortBreak')
     expect(mockNotification).toHaveBeenCalledWith(
       'Au travail !',
-      expect.objectContaining({ body: expect.any(String) })
+      expect.objectContaining({ body: expect.any(String), icon: '/pwa-192x192.png' })
     )
   })
 
-  it("n'envoie pas de notification si permission non accordée", () => {
+  it("ne propage pas d'exception si new Notification() throw", async () => {
+    mockNotification.mockImplementationOnce(() => {
+      throw new TypeError('Illegal constructor')
+    })
+    await expect(sendPhaseNotification('work')).resolves.toBeUndefined()
+  })
+
+  it("n'envoie pas de notification si permission non accordée", async () => {
     mockNotification.permission = 'denied'
-    sendPhaseNotification('work')
+    await sendPhaseNotification('work')
     expect(mockNotification).not.toHaveBeenCalled()
   })
 })

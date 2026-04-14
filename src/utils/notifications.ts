@@ -55,9 +55,23 @@ const PHASE_MESSAGES: Partial<Record<Phase, { title: string; body: string }>> = 
   longBreak: { title: 'Au travail !', body: "Longue pause terminée. C'est reparti !" },
 }
 
-export function sendPhaseNotification(phase: Phase): void {
+export async function sendPhaseNotification(phase: Phase): Promise<void> {
   if (!('Notification' in window) || Notification.permission !== 'granted') return
   const msg = PHASE_MESSAGES[phase]
   if (!msg) return
-  new Notification(msg.title, { body: msg.body, icon: '/icons/pwa-192x192.png' })
+
+  const options = { body: msg.body, icon: '/pwa-192x192.png' }
+
+  try {
+    if ('serviceWorker' in navigator && navigator.serviceWorker) {
+      const registration = await navigator.serviceWorker.getRegistration()
+      if (registration) {
+        await registration.showNotification(msg.title, options)
+        return
+      }
+    }
+    new Notification(msg.title, options)
+  } catch {
+    // Silently fail — not supported in this context (ex: mobile main thread)
+  }
 }
