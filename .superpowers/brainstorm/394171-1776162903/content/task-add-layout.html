@@ -1,0 +1,246 @@
+<style>
+  .preview {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 16px;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #e2e8f0;
+  }
+
+  .timer-stub {
+    background: #16213e;
+    border-radius: 50%;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid #e94560;
+    font-size: 28px;
+    font-weight: bold;
+    color: #e2e8f0;
+  }
+
+  .controls-stub {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .btn-stub {
+    background: #0f3460;
+    color: #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  .task-section {
+    border-top: 1px solid #2d3561;
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 4px;
+    border-bottom: 1px solid #2d3561;
+    font-size: 13px;
+  }
+
+  .checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #8892b0;
+    border-radius: 3px;
+    flex-shrink: 0;
+    background: transparent;
+  }
+
+  .checkbox.checked {
+    background: #4ecca3;
+    border-color: #4ecca3;
+  }
+
+  .task-label {
+    color: #e2e8f0;
+    font-size: 13px;
+  }
+
+  .task-label.done {
+    color: #8892b0;
+    text-decoration: line-through;
+  }
+
+  .completed-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 4px;
+    color: #4ecca3;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px solid #2d3561;
+  }
+
+  .add-input {
+    background: #16213e;
+    border: 1px solid #2d3561;
+    border-radius: 6px;
+    color: #e2e8f0;
+    font-size: 13px;
+    padding: 7px 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .add-btn {
+    background: #0f3460;
+    color: #e2e8f0;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .add-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .add-link {
+    color: #8892b0;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    margin-top: 6px;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8892b0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+</style>
+
+<h2>Comment ajoute-t-on une tâche ?</h2>
+<p class="subtitle">3 approches pour la zone de saisie et l'organisation de la liste</p>
+
+<div class="cards">
+
+  <!-- Option A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="preview">
+        <div class="timer-stub">25:00</div>
+        <div class="controls-stub">
+          <div class="btn-stub">▶ Start</div>
+          <div class="btn-stub">■ Stop</div>
+        </div>
+        <div class="task-section">
+          <div class="section-title">Tâches</div>
+          <div class="add-row">
+            <input class="add-input" placeholder="Nouvelle tâche…" style="pointer-events:none">
+            <div class="add-btn">+</div>
+          </div>
+          <div class="task-item">
+            <div class="checkbox checked"></div>
+            <span class="task-label done">Relire les specs</span>
+          </div>
+          <div class="task-item">
+            <div class="checkbox"></div>
+            <span class="task-label">Implémenter le store</span>
+          </div>
+          <div class="task-item">
+            <div class="checkbox"></div>
+            <span class="task-label">Écrire les tests</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Saisie en haut</h3>
+      <p>Input toujours visible en haut de la liste. Rapide à atteindre, on ajoute sans scroller.</p>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="preview">
+        <div class="timer-stub">25:00</div>
+        <div class="controls-stub">
+          <div class="btn-stub">▶ Start</div>
+          <div class="btn-stub">■ Stop</div>
+        </div>
+        <div class="task-section">
+          <div class="section-title">Tâches</div>
+          <div class="completed-bar">▶ 1 terminée</div>
+          <div class="task-item">
+            <div class="checkbox"></div>
+            <span class="task-label">Implémenter le store</span>
+          </div>
+          <div class="task-item">
+            <div class="checkbox"></div>
+            <span class="task-label">Écrire les tests</span>
+          </div>
+          <div class="add-row" style="margin-top:8px">
+            <input class="add-input" placeholder="Ajouter une tâche…" style="pointer-events:none">
+            <div class="add-btn">+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Saisie en bas</h3>
+      <p>Liste d'abord, input en bas. Les tâches terminées sont dans l'accordéon au-dessus de la liste active.</p>
+    </div>
+  </div>
+
+  <!-- Option C -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="preview">
+        <div class="timer-stub">25:00</div>
+        <div class="controls-stub">
+          <div class="btn-stub">▶ Start</div>
+          <div class="btn-stub">■ Stop</div>
+        </div>
+        <div class="task-section">
+          <div class="section-title">Tâches</div>
+          <div class="completed-bar">▶ 1 terminée</div>
+          <div class="task-item">
+            <div class="checkbox"></div>
+            <span class="task-label">Implémenter le store</span>
+          </div>
+          <div class="task-item">
+            <div class="checkbox"></div>
+            <span class="task-label">Écrire les tests</span>
+          </div>
+          <div class="add-link">＋ Ajouter une tâche</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Lien discret</h3>
+      <p>Un lien "+ Ajouter une tâche" en bas. Le cliquer fait apparaître un input inline. Plus épuré visuellement.</p>
+    </div>
+  </div>
+
+</div>
