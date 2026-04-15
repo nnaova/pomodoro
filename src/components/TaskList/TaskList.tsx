@@ -20,6 +20,7 @@ import styles from './TaskList.module.css'
 
 function SortableTaskItem({ task }: { task: Task }) {
   const toggleTask = usePomodoroStore((s) => s.toggleTask)
+  const deleteTask = usePomodoroStore((s) => s.deleteTask)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: task.id })
 
@@ -46,6 +47,13 @@ function SortableTaskItem({ task }: { task: Task }) {
       <label htmlFor={`task-${task.id}`} className={styles.taskLabel}>
         {task.title}
       </label>
+      <button
+        className={styles.deleteBtn}
+        onClick={() => deleteTask(task.id)}
+        aria-label="Supprimer"
+      >
+        ✕
+      </button>
     </div>
   )
 }

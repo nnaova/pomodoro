@@ -117,4 +117,13 @@ describe('TaskList', () => {
     expect(screen.queryByText(/terminée/)).toBeNull()
     expect(screen.getByText('Tâche finie')).toBeInTheDocument()
   })
+
+  it('supprime une tâche active en cliquant sur ✕', () => {
+    usePomodoroStore.setState({
+      tasks: [{ id: '1', title: 'Tâche à supprimer', done: false, createdAt: 0 }],
+    })
+    render(<TaskList />)
+    fireEvent.click(screen.getByRole('button', { name: 'Supprimer' }))
+    expect(usePomodoroStore.getState().tasks).toHaveLength(0)
+  })
 })

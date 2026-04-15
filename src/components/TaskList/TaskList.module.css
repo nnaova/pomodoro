@@ -118,3 +118,20 @@
 .addInput:focus {
   border-color: var(--color-short-break);
 }
+
+.deleteBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1;
+  padding: 2px 4px;
+  flex-shrink: 0;
+  font-family: inherit;
+  transition: color 0.15s ease;
+}
+
+.deleteBtn:hover {
+  color: #e05252;
+}
