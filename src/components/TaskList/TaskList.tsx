@@ -79,6 +79,7 @@ function CompletedAccordion({ tasks }: { tasks: Task[] }) {
         </button>
         <button
           className={styles.deleteAllBtn}
+          aria-label="Supprimer toutes les tâches terminées"
           onClick={() => {
             if (window.confirm('Supprimer toutes les tâches terminées ?')) {
               deleteAllDoneTasks()

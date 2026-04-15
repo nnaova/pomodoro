@@ -69,7 +69,7 @@ describe('TaskList', () => {
       tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
     })
     render(<TaskList />)
-    fireEvent.click(screen.getByRole('button', { name: /terminée/ }))
+    fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
     expect(screen.getByText('Tâche finie')).toBeInTheDocument()
   })
 
@@ -78,8 +78,8 @@ describe('TaskList', () => {
       tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
     })
     render(<TaskList />)
-    fireEvent.click(screen.getByRole('button', { name: /terminée/ }))
-    fireEvent.click(screen.getByRole('button', { name: /terminée/ }))
+    fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
+    fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
     expect(screen.queryByText('Tâche finie')).toBeNull()
   })
 
@@ -109,7 +109,7 @@ describe('TaskList', () => {
       tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
     })
     render(<TaskList />)
-    fireEvent.click(screen.getByRole('button', { name: /terminée/ }))
+    fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
     // accordion is open, now uncheck the done task
     const checkbox = screen.getByRole('checkbox')
     fireEvent.click(checkbox)
@@ -132,7 +132,7 @@ describe('TaskList', () => {
       tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
     })
     render(<TaskList />)
-    fireEvent.click(screen.getByRole('button', { name: /terminée/ }))
+    fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
     fireEvent.click(screen.getByRole('button', { name: 'Supprimer' }))
     expect(usePomodoroStore.getState().tasks).toHaveLength(0)
     expect(screen.queryByText(/terminée/)).toBeNull()
@@ -147,7 +147,7 @@ describe('TaskList', () => {
       ],
     })
     render(<TaskList />)
-    fireEvent.click(screen.getByRole('button', { name: 'Tout supprimer' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Supprimer toutes les tâches terminées' }))
     expect(window.confirm).toHaveBeenCalledWith('Supprimer toutes les tâches terminées ?')
     expect(usePomodoroStore.getState().tasks).toHaveLength(1)
     expect(usePomodoroStore.getState().tasks[0].title).toBe('Active')
@@ -160,7 +160,7 @@ describe('TaskList', () => {
       tasks: [{ id: '2', title: 'Finie', done: true, createdAt: 1 }],
     })
     render(<TaskList />)
-    fireEvent.click(screen.getByRole('button', { name: 'Tout supprimer' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Supprimer toutes les tâches terminées' }))
     expect(usePomodoroStore.getState().tasks).toHaveLength(1)
     vi.restoreAllMocks()
   })
