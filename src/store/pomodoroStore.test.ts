@@ -249,3 +249,22 @@ describe('deleteTask', () => {
     expect(usePomodoroStore.getState().tasks).toHaveLength(1)
   })
 })
+
+describe('deleteAllDoneTasks', () => {
+  it('supprime toutes les tâches terminées', () => {
+    usePomodoroStore.getState().addTask('Active')
+    usePomodoroStore.getState().addTask('Terminée')
+    const doneId = usePomodoroStore.getState().tasks[1].id
+    usePomodoroStore.getState().toggleTask(doneId)
+    usePomodoroStore.getState().deleteAllDoneTasks()
+    const { tasks } = usePomodoroStore.getState()
+    expect(tasks).toHaveLength(1)
+    expect(tasks[0].title).toBe('Active')
+  })
+
+  it('ne modifie rien si aucune tâche n\'est terminée', () => {
+    usePomodoroStore.getState().addTask('Active')
+    usePomodoroStore.getState().deleteAllDoneTasks()
+    expect(usePomodoroStore.getState().tasks).toHaveLength(1)
+  })
+})
