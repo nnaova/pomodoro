@@ -231,3 +231,21 @@ describe('reorderTasks', () => {
     expect(usePomodoroStore.getState().tasks).toHaveLength(1)
   })
 })
+
+describe('deleteTask', () => {
+  it('supprime la tâche avec l\'id correspondant', () => {
+    usePomodoroStore.getState().addTask('A')
+    usePomodoroStore.getState().addTask('B')
+    const id = usePomodoroStore.getState().tasks[0].id
+    usePomodoroStore.getState().deleteTask(id)
+    const { tasks } = usePomodoroStore.getState()
+    expect(tasks).toHaveLength(1)
+    expect(tasks[0].title).toBe('B')
+  })
+
+  it('ne modifie rien si l\'id est inconnu', () => {
+    usePomodoroStore.getState().addTask('A')
+    usePomodoroStore.getState().deleteTask('inconnu')
+    expect(usePomodoroStore.getState().tasks).toHaveLength(1)
+  })
+})

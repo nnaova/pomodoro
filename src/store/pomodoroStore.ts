@@ -42,6 +42,8 @@ export interface Actions {
   addTask: (title: string) => void
   toggleTask: (id: string) => void
   reorderTasks: (activeId: string, overId: string) => void
+  deleteTask: (id: string) => void
+  deleteAllDoneTasks: () => void
 }
 
 export type PomodoroStore = Settings & Session & { tasks: Task[] } & Actions
@@ -93,6 +95,14 @@ export const usePomodoroStore = create<PomodoroStore>()(
           tasks.splice(to, 0, tasks.splice(from, 1)[0])
           return { tasks }
         })
+      },
+
+      deleteTask: (id) => {
+        set((s) => ({ tasks: s.tasks.filter((t) => t.id !== id) }))
+      },
+
+      deleteAllDoneTasks: () => {
+        set((s) => ({ tasks: s.tasks.filter((t) => !t.done) }))
       },
 
       start: () => {
