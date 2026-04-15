@@ -1,5 +1,5 @@
 // src/components/TaskList/TaskList.test.tsx
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { usePomodoroStore } from '../../store/pomodoroStore'
 import { TaskList } from './TaskList'
@@ -69,7 +69,7 @@ describe('TaskList', () => {
       tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
     })
     render(<TaskList />)
-    fireEvent.click(screen.getByText(/1 terminée/))
+    fireEvent.click(screen.getByRole('button', { name: /terminée/ }))
     expect(screen.getByText('Tâche finie')).toBeInTheDocument()
   })
 
@@ -78,8 +78,8 @@ describe('TaskList', () => {
       tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
     })
     render(<TaskList />)
-    fireEvent.click(screen.getByText(/1 terminée/))
-    fireEvent.click(screen.getByText(/1 terminée/))
+    fireEvent.click(screen.getByRole('button', { name: /terminée/ }))
+    fireEvent.click(screen.getByRole('button', { name: /terminée/ }))
     expect(screen.queryByText('Tâche finie')).toBeNull()
   })
 
@@ -109,7 +109,7 @@ describe('TaskList', () => {
       tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
     })
     render(<TaskList />)
-    fireEvent.click(screen.getByText(/1 terminée/))
+    fireEvent.click(screen.getByRole('button', { name: /terminée/ }))
     // accordion is open, now uncheck the done task
     const checkbox = screen.getByRole('checkbox')
     fireEvent.click(checkbox)
@@ -125,5 +125,43 @@ describe('TaskList', () => {
     render(<TaskList />)
     fireEvent.click(screen.getByRole('button', { name: 'Supprimer' }))
     expect(usePomodoroStore.getState().tasks).toHaveLength(0)
+  })
+
+  it('supprime une tâche terminée depuis l\'accordéon en cliquant sur ✕', () => {
+    usePomodoroStore.setState({
+      tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
+    })
+    render(<TaskList />)
+    fireEvent.click(screen.getByRole('button', { name: /terminée/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'Supprimer' }))
+    expect(usePomodoroStore.getState().tasks).toHaveLength(0)
+    expect(screen.queryByText(/terminée/)).toBeNull()
+  })
+
+  it('supprime toutes les tâches terminées après confirmation', () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
+    usePomodoroStore.setState({
+      tasks: [
+        { id: '1', title: 'Active', done: false, createdAt: 0 },
+        { id: '2', title: 'Finie', done: true, createdAt: 1 },
+      ],
+    })
+    render(<TaskList />)
+    fireEvent.click(screen.getByRole('button', { name: 'Tout supprimer' }))
+    expect(window.confirm).toHaveBeenCalledWith('Supprimer toutes les tâches terminées ?')
+    expect(usePomodoroStore.getState().tasks).toHaveLength(1)
+    expect(usePomodoroStore.getState().tasks[0].title).toBe('Active')
+    vi.restoreAllMocks()
+  })
+
+  it('ne supprime pas si l\'utilisateur annule la confirmation', () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(false)
+    usePomodoroStore.setState({
+      tasks: [{ id: '2', title: 'Finie', done: true, createdAt: 1 }],
+    })
+    render(<TaskList />)
+    fireEvent.click(screen.getByRole('button', { name: 'Tout supprimer' }))
+    expect(usePomodoroStore.getState().tasks).toHaveLength(1)
+    vi.restoreAllMocks()
   })
 })

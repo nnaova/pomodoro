@@ -61,19 +61,33 @@ function SortableTaskItem({ task }: { task: Task }) {
 function CompletedAccordion({ tasks }: { tasks: Task[] }) {
   const [open, setOpen] = useState(false)
   const toggleTask = usePomodoroStore((s) => s.toggleTask)
+  const deleteTask = usePomodoroStore((s) => s.deleteTask)
+  const deleteAllDoneTasks = usePomodoroStore((s) => s.deleteAllDoneTasks)
 
   if (tasks.length === 0) return null
 
   return (
     <div className={styles.accordion}>
-      <button
-        className={styles.accordionHeader}
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-      >
-        <span className={styles.accordionArrow}>{open ? '▼' : '▶'}</span>
-        {tasks.length} terminée{tasks.length > 1 ? 's' : ''}
-      </button>
+      <div className={styles.accordionHeaderRow}>
+        <button
+          className={styles.accordionHeader}
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+        >
+          <span className={styles.accordionArrow}>{open ? '▼' : '▶'}</span>
+          {tasks.length} terminée{tasks.length > 1 ? 's' : ''}
+        </button>
+        <button
+          className={styles.deleteAllBtn}
+          onClick={() => {
+            if (window.confirm('Supprimer toutes les tâches terminées ?')) {
+              deleteAllDoneTasks()
+            }
+          }}
+        >
+          Tout supprimer
+        </button>
+      </div>
       {open && (
         <div className={styles.accordionBody}>
           {tasks.map((task) => (
@@ -92,6 +106,13 @@ function CompletedAccordion({ tasks }: { tasks: Task[] }) {
               >
                 {task.title}
               </label>
+              <button
+                className={styles.deleteBtn}
+                onClick={() => deleteTask(task.id)}
+                aria-label="Supprimer"
+              >
+                ✕
+              </button>
             </div>
           ))}
         </div>

@@ -14,7 +14,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  width: 100%;
+  flex: 1;
   text-align: left;
   background: none;
   border: none;
@@ -133,5 +133,26 @@
 }
 
 .deleteBtn:hover {
+  color: #e05252;
+}
+
+.accordionHeaderRow {
+  display: flex;
+  align-items: center;
+}
+
+.deleteAllBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 4px 6px;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.deleteAllBtn:hover {
   color: #e05252;
 }
