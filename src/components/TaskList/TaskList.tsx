@@ -46,9 +46,8 @@ function SortableTaskItem({ task }: { task: Task }) {
           {task.title}
         </label>
         <div className={styles.progressBar}>
-          {PROGRESS_STEPS.map((step) => {
+          {PROGRESS_STEPS.map((step, idx) => {
             const filled = task.progress >= step
-            const idx = PROGRESS_STEPS.indexOf(step)
             const newProgress = (task.progress === step
               ? (PROGRESS_STEPS[idx - 1] ?? 0)
               : step) as Task['progress']
@@ -58,6 +57,7 @@ function SortableTaskItem({ task }: { task: Task }) {
                 className={`${styles.progressSegment}${filled ? ` ${styles.progressSegmentFilled}` : ''}`}
                 onClick={() => setTaskProgress(task.id, newProgress)}
                 aria-label={`Progression ${step}%`}
+                aria-pressed={filled}
               />
             )
           })}
