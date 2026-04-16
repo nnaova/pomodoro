@@ -214,6 +214,11 @@ export const usePomodoroStore = create<PomodoroStore>()(
         notificationsEnabled: state.notificationsEnabled,
         theme: state.theme,
         tasks: state.tasks,
+        phase: state.phase,
+        isRunning: state.isRunning,
+        endTimestamp: state.endTimestamp,
+        currentCycle: state.currentCycle,
+        completedCycles: state.completedCycles,
       }),
     }
   )
