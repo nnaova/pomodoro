@@ -185,6 +185,28 @@ describe('addTask', () => {
   })
 })
 
+it('addTask initialise progress à 0', () => {
+  usePomodoroStore.getState().addTask('Nouvelle tâche')
+  expect(usePomodoroStore.getState().tasks[0].progress).toBe(0)
+})
+
+describe('setTaskProgress', () => {
+  it('met à jour le progress de la tâche ciblée', () => {
+    usePomodoroStore.getState().addTask('Tâche A')
+    const id = usePomodoroStore.getState().tasks[0].id
+    usePomodoroStore.getState().setTaskProgress(id, 75)
+    expect(usePomodoroStore.getState().tasks[0].progress).toBe(75)
+  })
+
+  it('ne touche pas les autres tâches', () => {
+    usePomodoroStore.getState().addTask('A')
+    usePomodoroStore.getState().addTask('B')
+    const idA = usePomodoroStore.getState().tasks[0].id
+    usePomodoroStore.getState().setTaskProgress(idA, 50)
+    expect(usePomodoroStore.getState().tasks[1].progress).toBe(0)
+  })
+})
+
 describe('toggleTask', () => {
   it('bascule done à true puis à false', () => {
     usePomodoroStore.getState().addTask('Tâche A')

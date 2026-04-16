@@ -9,6 +9,7 @@ export interface Task {
   id: string
   title: string
   done: boolean
+  progress: 0 | 25 | 50 | 75 | 100
   createdAt: number
 }
 
@@ -44,6 +45,7 @@ export interface Actions {
   reorderTasks: (activeId: string, overId: string) => void
   deleteTask: (id: string) => void
   deleteAllDoneTasks: () => void
+  setTaskProgress: (id: string, progress: Task['progress']) => void
 }
 
 export type PomodoroStore = Settings & Session & { tasks: Task[] } & Actions
@@ -75,6 +77,7 @@ export const usePomodoroStore = create<PomodoroStore>()(
           id: crypto.randomUUID(),
           title,
           done: false,
+          progress: 0,
           createdAt: Date.now(),
         }
         set((s) => ({ tasks: [...s.tasks, task] }))
@@ -103,6 +106,12 @@ export const usePomodoroStore = create<PomodoroStore>()(
 
       deleteAllDoneTasks: () => {
         set((s) => ({ tasks: s.tasks.filter((t) => !t.done) }))
+      },
+
+      setTaskProgress: (id, progress) => {
+        set((s) => ({
+          tasks: s.tasks.map((t) => (t.id === id ? { ...t, progress } : t)),
+        }))
       },
 
       start: () => {
