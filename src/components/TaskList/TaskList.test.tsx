@@ -208,4 +208,16 @@ describe('TaskList', () => {
     fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
     expect(screen.queryByRole('button', { name: /Progression/ })).toBeNull()
   })
+
+  it('aria-pressed reflète correctement les segments remplis', () => {
+    usePomodoroStore.setState({
+      tasks: [{ id: '1', title: 'T', done: false, progress: 50, createdAt: 0 }],
+    })
+    render(<TaskList />)
+    const btns = screen.getAllByRole('button', { name: /Progression/ })
+    expect(btns[0]).toHaveAttribute('aria-pressed', 'true')  // 25%
+    expect(btns[1]).toHaveAttribute('aria-pressed', 'true')  // 50%
+    expect(btns[2]).toHaveAttribute('aria-pressed', 'false') // 75%
+    expect(btns[3]).toHaveAttribute('aria-pressed', 'false') // 100%
+  })
 })

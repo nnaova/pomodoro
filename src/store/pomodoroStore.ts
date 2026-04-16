@@ -215,6 +215,7 @@ export const usePomodoroStore = create<PomodoroStore>()(
         theme: state.theme,
         tasks: state.tasks,
         phase: state.phase,
+        timeLeft: state.timeLeft,
         isRunning: state.isRunning,
         endTimestamp: state.endTimestamp,
         currentCycle: state.currentCycle,
