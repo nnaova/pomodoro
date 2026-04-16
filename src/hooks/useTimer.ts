@@ -5,6 +5,14 @@ import { playPhaseEndSound, sendPhaseNotification } from '../utils/notifications
 export function useTimer(): void {
   const isRunning = usePomodoroStore((s) => s.isRunning)
 
+  // Rattrapage au montage : si le timer tournait et la phase est déjà expirée
+  useEffect(() => {
+    const state = usePomodoroStore.getState()
+    if (state.isRunning && state.endTimestamp !== null && state.endTimestamp <= Date.now()) {
+      state.advancePhase()
+    }
+  }, [])
+
   useEffect(() => {
     if (!isRunning) return
 

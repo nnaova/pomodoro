@@ -102,6 +102,34 @@ describe('useTimer', () => {
     expect(usePomodoroStore.getState().timeLeft).toBe(98)
   })
 
+  it('avance la phase au montage si endTimestamp est déjà dépassé', () => {
+    usePomodoroStore.setState({
+      phase: 'work',
+      timeLeft: 1,
+      isRunning: true,
+      currentCycle: 0,
+      completedCycles: 0,
+      endTimestamp: Date.now() - 5000,
+    })
+    act(() => {
+      renderHook(() => useTimer())
+    })
+    expect(usePomodoroStore.getState().phase).toBe('shortBreak')
+  })
+
+  it("ne fait pas de rattrapage si endTimestamp n'est pas expiré", () => {
+    usePomodoroStore.setState({
+      phase: 'work',
+      timeLeft: 100,
+      isRunning: true,
+      endTimestamp: Date.now() + 100 * 1000,
+    })
+    act(() => {
+      renderHook(() => useTimer())
+    })
+    expect(usePomodoroStore.getState().phase).toBe('work')
+  })
+
   it('corrige le timer au retour sur l\'onglet via visibilitychange', () => {
     const timeLeft = 60
     usePomodoroStore.setState({
