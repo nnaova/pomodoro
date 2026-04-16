@@ -183,11 +183,11 @@ describe('addTask', () => {
     const titles = usePomodoroStore.getState().tasks.map((t) => t.title)
     expect(titles).toEqual(['A', 'B'])
   })
-})
 
-it('addTask initialise progress à 0', () => {
-  usePomodoroStore.getState().addTask('Nouvelle tâche')
-  expect(usePomodoroStore.getState().tasks[0].progress).toBe(0)
+  it('initialise progress à 0', () => {
+    usePomodoroStore.getState().addTask('Nouvelle tâche')
+    expect(usePomodoroStore.getState().tasks[0].progress).toBe(0)
+  })
 })
 
 describe('setTaskProgress', () => {
