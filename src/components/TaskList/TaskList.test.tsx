@@ -39,7 +39,7 @@ describe('TaskList', () => {
 
   it('n\'affiche pas l\'accordéon quand aucune tâche n\'est terminée', () => {
     usePomodoroStore.setState({
-      tasks: [{ id: '1', title: 'Active', done: false, createdAt: 0 }],
+      tasks: [{ id: '1', title: 'Active', done: false, progress: 0, createdAt: 0 }],
     })
     render(<TaskList />)
     expect(screen.queryByText(/terminée/)).toBeNull()
@@ -47,7 +47,7 @@ describe('TaskList', () => {
 
   it('affiche le compteur "1 terminée" quand une tâche est terminée', () => {
     usePomodoroStore.setState({
-      tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
+      tasks: [{ id: '1', title: 'Tâche finie', done: true, progress: 0, createdAt: 0 }],
     })
     render(<TaskList />)
     expect(screen.getByText(/1 terminée/)).toBeInTheDocument()
@@ -56,8 +56,8 @@ describe('TaskList', () => {
   it('affiche "2 terminées" pour le pluriel', () => {
     usePomodoroStore.setState({
       tasks: [
-        { id: '1', title: 'A', done: true, createdAt: 0 },
-        { id: '2', title: 'B', done: true, createdAt: 1 },
+        { id: '1', title: 'A', done: true, progress: 0, createdAt: 0 },
+        { id: '2', title: 'B', done: true, progress: 0, createdAt: 1 },
       ],
     })
     render(<TaskList />)
@@ -66,7 +66,7 @@ describe('TaskList', () => {
 
   it('déplie l\'accordéon et affiche les tâches terminées au clic', () => {
     usePomodoroStore.setState({
-      tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
+      tasks: [{ id: '1', title: 'Tâche finie', done: true, progress: 0, createdAt: 0 }],
     })
     render(<TaskList />)
     fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
@@ -75,7 +75,7 @@ describe('TaskList', () => {
 
   it('replie l\'accordéon au deuxième clic', () => {
     usePomodoroStore.setState({
-      tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
+      tasks: [{ id: '1', title: 'Tâche finie', done: true, progress: 0, createdAt: 0 }],
     })
     render(<TaskList />)
     fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
@@ -86,8 +86,8 @@ describe('TaskList', () => {
   it('affiche les tâches actives sans les terminées', () => {
     usePomodoroStore.setState({
       tasks: [
-        { id: '1', title: 'Active', done: false, createdAt: 0 },
-        { id: '2', title: 'Finie', done: true, createdAt: 1 },
+        { id: '1', title: 'Active', done: false, progress: 0, createdAt: 0 },
+        { id: '2', title: 'Finie', done: true, progress: 0, createdAt: 1 },
       ],
     })
     render(<TaskList />)
@@ -106,7 +106,7 @@ describe('TaskList', () => {
 
   it('décocher une tâche terminée la remet dans les actives', () => {
     usePomodoroStore.setState({
-      tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
+      tasks: [{ id: '1', title: 'Tâche finie', done: true, progress: 0, createdAt: 0 }],
     })
     render(<TaskList />)
     fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
@@ -120,7 +120,7 @@ describe('TaskList', () => {
 
   it('supprime une tâche active en cliquant sur ✕', () => {
     usePomodoroStore.setState({
-      tasks: [{ id: '1', title: 'Tâche à supprimer', done: false, createdAt: 0 }],
+      tasks: [{ id: '1', title: 'Tâche à supprimer', done: false, progress: 0, createdAt: 0 }],
     })
     render(<TaskList />)
     fireEvent.click(screen.getByRole('button', { name: 'Supprimer' }))
@@ -129,7 +129,7 @@ describe('TaskList', () => {
 
   it('supprime une tâche terminée depuis l\'accordéon en cliquant sur ✕', () => {
     usePomodoroStore.setState({
-      tasks: [{ id: '1', title: 'Tâche finie', done: true, createdAt: 0 }],
+      tasks: [{ id: '1', title: 'Tâche finie', done: true, progress: 0, createdAt: 0 }],
     })
     render(<TaskList />)
     fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
@@ -142,8 +142,8 @@ describe('TaskList', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true)
     usePomodoroStore.setState({
       tasks: [
-        { id: '1', title: 'Active', done: false, createdAt: 0 },
-        { id: '2', title: 'Finie', done: true, createdAt: 1 },
+        { id: '1', title: 'Active', done: false, progress: 0, createdAt: 0 },
+        { id: '2', title: 'Finie', done: true, progress: 0, createdAt: 1 },
       ],
     })
     render(<TaskList />)
@@ -157,11 +157,55 @@ describe('TaskList', () => {
   it('ne supprime pas si l\'utilisateur annule la confirmation', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(false)
     usePomodoroStore.setState({
-      tasks: [{ id: '2', title: 'Finie', done: true, createdAt: 1 }],
+      tasks: [{ id: '2', title: 'Finie', done: true, progress: 0, createdAt: 1 }],
     })
     render(<TaskList />)
     fireEvent.click(screen.getByRole('button', { name: 'Supprimer toutes les tâches terminées' }))
     expect(usePomodoroStore.getState().tasks).toHaveLength(1)
     vi.restoreAllMocks()
+  })
+
+  it('affiche 4 segments de progression pour une tâche active', () => {
+    usePomodoroStore.setState({
+      tasks: [{ id: '1', title: 'Tâche', done: false, progress: 0, createdAt: 0 }],
+    })
+    render(<TaskList />)
+    expect(screen.getAllByRole('button', { name: /Progression/ })).toHaveLength(4)
+  })
+
+  it('cliquer le segment 50% quand progress=0 met progress à 50', () => {
+    usePomodoroStore.setState({
+      tasks: [{ id: '1', title: 'Tâche', done: false, progress: 0, createdAt: 0 }],
+    })
+    render(<TaskList />)
+    fireEvent.click(screen.getByRole('button', { name: 'Progression 50%' }))
+    expect(usePomodoroStore.getState().tasks[0].progress).toBe(50)
+  })
+
+  it('cliquer le segment actif repasse à l\'étape précédente', () => {
+    usePomodoroStore.setState({
+      tasks: [{ id: '1', title: 'Tâche', done: false, progress: 50, createdAt: 0 }],
+    })
+    render(<TaskList />)
+    fireEvent.click(screen.getByRole('button', { name: 'Progression 50%' }))
+    expect(usePomodoroStore.getState().tasks[0].progress).toBe(25)
+  })
+
+  it('cliquer 25% quand progress=25 remet progress à 0', () => {
+    usePomodoroStore.setState({
+      tasks: [{ id: '1', title: 'Tâche', done: false, progress: 25, createdAt: 0 }],
+    })
+    render(<TaskList />)
+    fireEvent.click(screen.getByRole('button', { name: 'Progression 25%' }))
+    expect(usePomodoroStore.getState().tasks[0].progress).toBe(0)
+  })
+
+  it("n'affiche pas la barre de progression dans l'accordéon terminé", () => {
+    usePomodoroStore.setState({
+      tasks: [{ id: '1', title: 'Finie', done: true, progress: 50, createdAt: 0 }],
+    })
+    render(<TaskList />)
+    fireEvent.click(screen.getByRole('button', { name: /\d+ terminée/ }))
+    expect(screen.queryByRole('button', { name: /Progression/ })).toBeNull()
   })
 })

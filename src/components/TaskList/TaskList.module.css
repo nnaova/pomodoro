@@ -73,7 +73,7 @@
   font-size: 14px;
   color: var(--text);
   cursor: pointer;
-  flex: 1;
+  display: block;
 }
 
 .taskLabelDone {
@@ -156,4 +156,35 @@
 
 .deleteAllBtn:hover {
   color: #e05252;
+}
+
+.taskContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.progressBar {
+  display: flex;
+  gap: 3px;
+  margin-top: 5px;
+  padding: 3px 0;
+}
+
+.progressSegment {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--surface-elevated);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.progressSegment:hover {
+  opacity: 0.75;
+}
+
+.progressSegmentFilled {
+  background: var(--color-work);
 }

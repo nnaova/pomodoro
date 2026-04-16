@@ -18,25 +18,22 @@ import { CSS } from '@dnd-kit/utilities'
 import { usePomodoroStore, type Task } from '../../store/pomodoroStore'
 import styles from './TaskList.module.css'
 
+const PROGRESS_STEPS: Array<25 | 50 | 75 | 100> = [25, 50, 75, 100]
+
 function SortableTaskItem({ task }: { task: Task }) {
   const toggleTask = usePomodoroStore((s) => s.toggleTask)
   const deleteTask = usePomodoroStore((s) => s.deleteTask)
+  const setTaskProgress = usePomodoroStore((s) => s.setTaskProgress)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: task.id })
 
   return (
     <div
       ref={setNodeRef}
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition,
-        opacity: isDragging ? 0.5 : 1,
-      }}
+      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
       className={styles.taskItem}
     >
-      <span className={styles.dragHandle} {...attributes} {...listeners}>
-        ⠿
-      </span>
+      <span className={styles.dragHandle} {...attributes} {...listeners}>⠿</span>
       <input
         type="checkbox"
         checked={task.done}
@@ -44,14 +41,29 @@ function SortableTaskItem({ task }: { task: Task }) {
         className={styles.checkbox}
         id={`task-${task.id}`}
       />
-      <label htmlFor={`task-${task.id}`} className={styles.taskLabel}>
-        {task.title}
-      </label>
-      <button
-        className={styles.deleteBtn}
-        onClick={() => deleteTask(task.id)}
-        aria-label="Supprimer"
-      >
+      <div className={styles.taskContent}>
+        <label htmlFor={`task-${task.id}`} className={styles.taskLabel}>
+          {task.title}
+        </label>
+        <div className={styles.progressBar}>
+          {PROGRESS_STEPS.map((step) => {
+            const filled = task.progress >= step
+            const idx = PROGRESS_STEPS.indexOf(step)
+            const newProgress = (task.progress === step
+              ? (PROGRESS_STEPS[idx - 1] ?? 0)
+              : step) as Task['progress']
+            return (
+              <button
+                key={step}
+                className={`${styles.progressSegment}${filled ? ` ${styles.progressSegmentFilled}` : ''}`}
+                onClick={() => setTaskProgress(task.id, newProgress)}
+                aria-label={`Progression ${step}%`}
+              />
+            )
+          })}
+        </div>
+      </div>
+      <button className={styles.deleteBtn} onClick={() => deleteTask(task.id)} aria-label="Supprimer">
         ✕
       </button>
     </div>
