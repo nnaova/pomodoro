@@ -10,8 +10,17 @@ import { Settings } from './components/Settings/Settings'
 import { TaskList } from './components/TaskList/TaskList'
 import styles from './App.module.css'
 
+const PHASE_LABEL: Record<string, string> = {
+  work: 'Travail',
+  shortBreak: 'Pause courte',
+  longBreak: 'Pause longue',
+}
+
 export default function App() {
   const theme = usePomodoroStore((s) => s.theme)
+  const isRunning = usePomodoroStore((s) => s.isRunning)
+  const timeLeft = usePomodoroStore((s) => s.timeLeft)
+  const phase = usePomodoroStore((s) => s.phase)
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   useTimer()
@@ -27,6 +36,16 @@ export default function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    if (isRunning && phase !== 'idle') {
+      const mm = String(Math.floor(timeLeft / 60)).padStart(2, '0')
+      const ss = String(timeLeft % 60).padStart(2, '0')
+      document.title = `${mm}:${ss} — ${PHASE_LABEL[phase] ?? phase}`
+    } else {
+      document.title = 'Pomodoro'
+    }
+  }, [isRunning, timeLeft, phase])
 
   return (
     <div className={styles.app}>
